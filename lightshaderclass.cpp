@@ -21,7 +21,7 @@ LightShaderClass::~LightShaderClass() {
 bool LightShaderClass::Initialize(ID3D11Device* device, HWND hWnd) {
 	bool result;
 
-	result = InitializeShader(device, hWnd, L"../DirectX/light.vs", L"../DirectX/light.ps");
+	result = InitializeShader(device, hWnd, L"../DirectX/textures/light.vs", L"../DirectX/textures/light.ps");
 	if (!result) {
 		return false;
 	}

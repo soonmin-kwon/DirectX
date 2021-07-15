@@ -18,7 +18,7 @@ TextureShaderClass::~TextureShaderClass() {
 
 bool TextureShaderClass::Initialize(ID3D11Device* device, HWND hWnd) {
 	
-	if (!InitializeShader(device, hWnd, L"../DirectX/texture.vs", L"../DirectX/texture.ps")) {
+	if (!InitializeShader(device, hWnd, L"../DirectX/textures/texture.vs", L"../DirectX/textures/texture.ps")) {
 		return false;
 	}
 	return true;

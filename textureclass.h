@@ -9,7 +9,7 @@ public:
 	TextureClass();
 	TextureClass(const TextureClass&);
 	~TextureClass();
-
+	
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, char*);
 	void Shutdown();
 

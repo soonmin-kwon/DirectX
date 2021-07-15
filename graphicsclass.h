@@ -3,11 +3,12 @@
 
 #include "d3dclass.h"
 #include "cameraclass.h"
-#include "modelclass.h"
-#include "lightshaderclass.h"
-#include "lightclass.h"
+#include "textureshaderclass.h"
+//#include "modelclass.h"
+//#include "lightshaderclass.h"
+//#include "lightclass.h"
+#include "bitmapclass.h"
 
-//#include "textureshaderclass.h"
 //#include "colorshaderclass.h"
 
 const bool FULL_SCREEN = false;
@@ -31,10 +32,11 @@ private:
 
 	D3DClass* m_direct3D;
 	CameraClass* m_camera;
-	ModelClass* m_model;
-	LightShaderClass* m_lightShader;
-	LightClass* m_light;
+	//ModelClass* m_model;
+	//LightShaderClass* m_lightShader;
+	//LightClass* m_light;
 	//ColorShaderClass* m_colorShader;
-	//TextureShaderClass* m_textureShader;
+	TextureShaderClass* m_textureShader;
+	BitmapClass* m_bitmap;
 };
 #endif

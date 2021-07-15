@@ -6,11 +6,12 @@ using namespace std;
 GraphicsClass::GraphicsClass() {
 	m_direct3D = 0;
 	m_camera = 0;
-	m_model = 0;
+	//m_model = 0;
 	//m_colorShader = 0;
-	//m_textureShader = 0;
-	m_light = 0;
-	m_lightShader = 0;
+	m_textureShader = 0;
+	//m_light = 0;
+	//m_lightShader = 0;
+	m_bitmap = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other) {
@@ -38,7 +39,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hWnd) {
 	}	
 	m_camera->SetPosition(0.0f, 0.0f, -10.0f);
 
-	m_model = new ModelClass();
+	/*m_model = new ModelClass();
 	if (!m_model) {
 		return false;
 	}
@@ -66,12 +67,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hWnd) {
 	m_light->SetAmbientColor(0.150f, 0.150f, 0.150f, 1.0f);
 	m_light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_light->SetDirection(0.0f, 0.0f, 1.0f);
-	//m_light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//m_light->SetSpecularPower(32.0f);
+	m_light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_light->SetSpecularPower(32.0f);
 	
-	return true;
 
-	/*m_colorShader = new ColorShaderClass();
+	m_colorShader = new ColorShaderClass();
 	if (!m_colorShader) {
 		return false;
 	}
@@ -79,7 +79,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hWnd) {
 	if (!result) {
 		MessageBox(hWnd, L"Could not initialize the color shader obj", L"Error", MB_OK);
 		return false;
-	}
+	}*/
 
 	m_textureShader = new TextureShaderClass();
 	if (!m_textureShader) {
@@ -89,12 +89,23 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hWnd) {
 	if (!result) {
 		MessageBox(hWnd, L"Could not initialize the color shader obj", L"Error", MB_OK);
 		return false;
-	}*/
+	}
 
+	m_bitmap = new BitmapClass();
+	if (!m_bitmap) {
+		return false;
+	}
+	result = m_bitmap->Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), (char*)"../DirectX/data/stone01.tga", screenWidth, screenHeight, 256, 256);
+	if (!result) {
+		MessageBoxW(hWnd, L"Could not initialize the bitmap object", L"Error", MB_OK);
+		return false;
+	}
+
+	return true;
 }
 
 void GraphicsClass::Shutdown() {
-	if (m_light) {
+	/*if (m_light) {
 		delete m_light;
 		m_light = 0;
 	}
@@ -109,6 +120,12 @@ void GraphicsClass::Shutdown() {
 		m_model->Shutdown();
 		delete m_model;
 		m_model = 0;
+	}*/
+
+	if (m_bitmap) {
+		m_bitmap->Shutdown();
+		delete m_bitmap;
+		m_bitmap = 0;
 	}
 
 	if (m_camera) {
@@ -127,12 +144,13 @@ void GraphicsClass::Shutdown() {
 		delete m_colorShader;
 		m_colorShader = 0;
 	}
-	
+	*/
+
 	if (m_textureShader) {
 		m_textureShader->Shutdown();
 		delete m_textureShader;
 		m_textureShader = 0;
-	}*/
+	}
 
 	return;
 }
@@ -181,7 +199,7 @@ bool GraphicsClass::Frame() {
 }*/
 
 bool GraphicsClass::Render(float rotation) {
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	bool result;
 
 	m_direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -190,15 +208,30 @@ bool GraphicsClass::Render(float rotation) {
 	m_camera->GetViewMatrix(viewMatrix);
 	m_direct3D->GetWorldMatrix(worldMatrix);
 	m_direct3D->GetProjectionMatrix(projectionMatrix);
+	m_direct3D->GetOrthoMatrix(orthoMatrix);
 
-	worldMatrix = XMMatrixRotationY(rotation);
+	m_direct3D->TurnZBufferOff();
 
-	m_model->Render(m_direct3D->GetDeviceContext());
+	result = m_bitmap->Render(m_direct3D->GetDeviceContext(), 300, 300);
+	if (!result) {
+		return false;
+	}
+
+	result = m_textureShader->Render(m_direct3D->GetDeviceContext(), m_bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_bitmap->GetTexture());
+	if (!result) {
+		return false;
+	}
+
+	m_direct3D->TurnZBufferOn();
+
+	//worldMatrix = XMMatrixRotationY(rotation);
+
+	/*m_model->Render(m_direct3D->GetDeviceContext());
 
 	result = m_lightShader->Render(m_direct3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model->GetTexture(), m_light->GetDirection(), m_light->GetDiffuseColor(), m_light->GetAmbientColor(), m_camera->GetPosition(), m_light->GetSpecularColor(), m_light->GetSpecularPower());
 	if (!result) {
 		return false;
-	}
+	}*/
 
 	m_direct3D->EndScene();
 
