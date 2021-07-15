@@ -338,3 +338,4 @@ ASALocalRun/
 *.mtl
 *.txt
 *.tga
+data*
